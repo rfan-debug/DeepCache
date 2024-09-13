@@ -36,10 +36,12 @@ class DeepCacheSDHelper(object):
         cache_interval, cache_layer_id, cache_block_id, skip_mode = \
             self.params['cache_interval'], self.params['cache_layer_id'], self.params['cache_block_id'], self.params['skip_mode']
         if skip_mode == 'uniform':
-            if (self.cur_timestep-self.start_timestep) % cache_interval == 0: return False
+            if (self.cur_timestep-self.start_timestep) % cache_interval == 0:
+                return False
         if block_i > cache_block_id or blocktype == 'mid':
             return True
-        if block_i < cache_block_id: return False
+        if block_i < cache_block_id:
+            return False
         return layer_i >= cache_layer_id if blocktype == 'down' else layer_i > cache_layer_id
         
     def is_enter_position(self, block_i, layer_i):
@@ -60,7 +62,8 @@ class DeepCacheSDHelper(object):
         def wrapped_forward(*args, **kwargs):
             skip = self._is_skip_step(block_i, layer_i, blocktype)
             result = self.cached_output[(blocktype, block_name, block_i, layer_i)] if skip else self.function_dict[(blocktype, block_name,  block_i, layer_i)](*args, **kwargs)
-            if not skip: self.cached_output[(blocktype, block_name, block_i, layer_i)] = result
+            if not skip:
+                self.cached_output[(blocktype, block_name, block_i, layer_i)] = result
             return result
         block.forward = wrapped_forward
 
@@ -121,3 +124,17 @@ class DeepCacheSDHelper(object):
         self.function_dict = {}
         self.cached_output = {}
         self.start_timestep = None
+
+
+if __name__ == "__main__":
+
+    from diffusers import StableDiffusionPipeline, UNet2DConditionModel
+    import torch
+
+
+
+    pipe = StableDiffusionPipeline.from_pretrained(
+        'stable-diffusion-v1-5/stable-diffusion-v1-5',
+        torch_dtype=torch.float16
+    )
+    print(pipe.unet)
