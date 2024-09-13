@@ -124,17 +124,3 @@ class DeepCacheSDHelper(object):
         self.function_dict = {}
         self.cached_output = {}
         self.start_timestep = None
-
-
-if __name__ == "__main__":
-
-    from diffusers import StableDiffusionPipeline, UNet2DConditionModel
-    import torch
-
-
-
-    pipe = StableDiffusionPipeline.from_pretrained(
-        'stable-diffusion-v1-5/stable-diffusion-v1-5',
-        torch_dtype=torch.float16
-    )
-    print(pipe.unet)
